@@ -3,7 +3,8 @@ import { Web3Auth } from "@web3auth-mpc/web3auth";
 import { SafeEventEmitterProvider } from "@web3auth-mpc/base";
 import { OpenloginAdapter } from "@web3auth-mpc/openlogin-adapter";
 import { tssDataCallback, tssGetPublic, tssSign } from "../util/mpc";
-const clientId = "YOUR_WEB3AUTH_CLIENT_ID";
+const clientId =
+  "BBP_6GOu3EJGGws9yd8wY_xFT0jZIWmiLMpqrEMx36jlM61K9XRnNLnnvEtGpF-RhXJDGMJjL-I-wTi13RcBBOo";
 export type Web3AuthContextData = {
   web3auth: Web3Auth | null;
   provider: SafeEventEmitterProvider | null;
@@ -27,6 +28,7 @@ export const Web3AuthProvider = ({
   useEffect(() => {
     const init = async () => {
       try {
+        console.log("test");
         const web3auth = new Web3Auth({
           clientId,
           uiConfig: {
@@ -45,7 +47,7 @@ export const Web3AuthProvider = ({
           },
           enableLogging: true,
         });
-
+        console.log("test2");
         const openloginAdapter = new OpenloginAdapter({
           loginSettings: {
             mfaLevel: "mandatory",
@@ -62,8 +64,9 @@ export const Web3AuthProvider = ({
             clientId,
           },
         });
+        console.log("test3");
         (window as any).openloginAdapter = openloginAdapter;
-
+        console.log("test4");
         web3auth.configureAdapter(openloginAdapter);
         await web3auth.initModal({
           modalConfig: {
@@ -81,6 +84,7 @@ export const Web3AuthProvider = ({
             },
           },
         });
+        console.log("test5");
         setWeb3auth(web3auth);
 
         if (web3auth.provider) {
