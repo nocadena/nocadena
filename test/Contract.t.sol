@@ -36,7 +36,12 @@ contract ContractTest is Test {
         core = new Core();
         nousdc = new noERC20(address(core), "nocadena USDC", "nUSDC");
         noeth = new noERC20(address(core), "nocadena ETH", "nETH");
-        core.initialize(address(nousdc), address(noeth), address(communicator));
+        core.initialize(
+            address(nousdc),
+            address(noeth),
+            address(0),
+            address(communicator)
+        );
         communicator.initialize(
             1,
             1,

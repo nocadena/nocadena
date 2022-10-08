@@ -21,10 +21,10 @@ contract InitCommunicator is Config, Getter {
         address satellite = getContractAddress(chainId, "satellite");
         console2.logAddress(getContractAddress(chainId, "satellite"));
 
-        getSatelliteModuleAddresses();
+        getCommunicatorModuleAddresses();
 
         console2.logUint(123456789);
-        console2.logUint(satelliteAddresses.length);
+        console2.logUint(communicatorAddresses.length);
         vm.startBroadcast();
 
         communicator.initialize(
@@ -33,11 +33,11 @@ contract InitCommunicator is Config, Getter {
             satellite,
             hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
             hypDomainIdentifier, // domains per chain
-            satelliteAddresses
+            communicatorAddresses
         );
         vm.stopBroadcast();
 
         console2.logUint(hypDomainIdentifier.length);
-        console2.logUint(satelliteAddresses.length);
+        console2.logUint(communicatorAddresses.length);
     }
 }
