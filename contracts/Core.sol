@@ -25,10 +25,15 @@ contract Core {
     function initialize(
         address _noUSDC,
         address _noETH,
+        //address _anoUSDC,
+        //address _anoETH,
         address _communicator
     ) public {
         noUSDC = InoERC20(_noUSDC);
         noETH = InoERC20(_noETH);
+
+        //aaveNoUSDC = InoERC20(_noUSDC);
+        //aaveNoETH = InoERC20(_noETH);
 
         communicator = Communicator(_communicator);
     }

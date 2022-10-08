@@ -7,7 +7,7 @@ contract Config {
     uint32[] hypDomainIdentifier;
     mapping(uint16 => address) hypOutbox;
 
-    uint16 masterChainId = 2;
+    uint16 masterChainId = 1;
 
     function init() internal {
         // Moonbase

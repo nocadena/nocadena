@@ -26,7 +26,7 @@ contract Communicator is IMessageRecipient {
     address satelliteAddress;
     address hypOutbox;
     uint32[] hypDomainIdentifier;
-    address[] dstSatellites;
+    address[] public dstSatellites;
 
     function initialize(
         uint16 _chainId,
@@ -55,16 +55,24 @@ contract Communicator is IMessageRecipient {
         return bytes32(uint256(uint160(_addr)));
     }
 
+    function getNc() public returns (uint256) {
+        return dstSatellites.length;
+    }
+
     function send(string memory protocol, uint256 amount) external {
         _sendHyperlane(amount, 2);
     }
 
     function _sendHyperlane(uint256 amount, uint16 _dstChainId) internal {
-        IOutbox(hypOutbox).dispatch(
+        console2.logAddress(hypOutbox);
+        console2.logUint(hypDomainIdentifier[_dstChainId - 1]);
+        console2.logBytes(abi.encodePacked(amount));
+
+        IOutbox(hypOutbox).dispatch{gas: 1000000}(
             hypDomainIdentifier[_dstChainId - 1],
             _addressToBytes32(dstSatellites[_dstChainId - 1]), // address of the destination chain satellite
-            bytes(abi.encodePacked(amount))
-        );
+            abi.encodePacked(amount)
+        ); // todo fix gas issue
     }
 
     function handle(

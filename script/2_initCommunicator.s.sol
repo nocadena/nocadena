@@ -11,7 +11,7 @@ contract InitCommunicator is Config, Getter {
     Communicator communicator;
 
     function run() public {
-        //init();
+        init();
         uint256 chainId = vm.envUint("CHAINID");
         communicator = Communicator(
             getContractAddress(chainId, "communicator")
@@ -22,10 +22,9 @@ contract InitCommunicator is Config, Getter {
         console2.logAddress(getContractAddress(chainId, "satellite"));
 
         getSatelliteModuleAddresses();
-        for (uint256 i = 0; i < satelliteAddresses.length; i++) {
-            console2.logAddress(satelliteAddresses[i]);
-        }
 
+        console2.logUint(123456789);
+        console2.logUint(satelliteAddresses.length);
         vm.startBroadcast();
 
         communicator.initialize(

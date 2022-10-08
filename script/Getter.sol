@@ -29,7 +29,7 @@ contract Getter is Script, Config {
             inputs[0] = "node";
             inputs[1] = "script/helpers/readJson.js";
             inputs[2] = "deployTest.json";
-            inputs[3] = vm.toString(chainIds[i]);
+            inputs[3] = vm.toString(i + 1);
             inputs[4] = "satellite";
             bytes memory _add = vm.ffi(inputs);
             address addr;
