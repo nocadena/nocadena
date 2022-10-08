@@ -14,7 +14,7 @@ contract noERC20 is ERC20 {
         string memory _symbol
     ) ERC20(_name, _symbol) {
         core = _core;
-        approve(core, 2**256 - 1);
+        //approve(core, 2**256 - 1);
     }
 
     //modifiers

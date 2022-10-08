@@ -16,10 +16,18 @@ contract Core {
     uint256 countUser;
 
     InoERC20 noUSDC;
+    InoERC20 noETH;
+
     Communicator communicator;
 
-    constructor(address _noUSDC, address _communicator) public {
+    constructor(
+        address _noUSDC,
+        address _noETH,
+        address _communicator
+    ) public {
         noUSDC = InoERC20(_noUSDC);
+        noETH = InoERC20(_noETH);
+
         communicator = Communicator(_communicator);
     }
 
@@ -29,11 +37,23 @@ contract Core {
 
         // issue fake tokens to every user account for demonstration purposes
         noUSDC.mint(msg.sender, 100);
+        noETH.mint(msg.sender, 1 ether);
     }
 
     function investAPWineETH(uint256 amount) public {
         require(noUSDC.balanceOf(msg.sender) >= amount);
         noUSDC.burn(msg.sender, amount);
         communicator.send("APwine", amount);
+    }
+
+    function getBalance(string memory asset, address user)
+        public
+        returns (uint256)
+    {
+        if (keccak256(bytes(asset)) == keccak256(bytes("ETH"))) {
+            return noUSDC.balanceOf(user);
+        } else {
+            return noETH.balanceOf(user);
+        }
     }
 }
