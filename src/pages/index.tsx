@@ -16,31 +16,47 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { MdVerticalAlignBottom, MdSend, MdTimer } from "react-icons/md";
 import { loadUserTokens } from "../util/tokens";
-import { UserToken } from "../util/types";
+import { investmentDetails, UserToken } from "../util/types";
 import { Token } from "../components/Token";
 import { Web3AuthContext } from "../components/Web3AuthProvider";
 import { getUserInfo, login } from "../util/web3Auth";
+import { ActiveInvestment } from "../components/activeInvestment";
+import Logo from "../../public/logo";
 //https://react-icons.github.io/react-icons/icons?name=md
 const Home: NextPage = () => {
   const authContext = useContext(Web3AuthContext);
+  const [activeInvestments, setActiveInvestments] = useState(
+    [] as investmentDetails[]
+  );
   const [tokens, setTokens] = useState([] as UserToken[]);
   useEffect(() => {
     // load tokens of user
     loadUserTokens().then((tokens) => setTokens(tokens));
+    setActiveInvestments([{ title: "Aave", pic: "hha" }]);
   }, []);
   if (!authContext) return <Spinner />;
   else if (!authContext.provider)
     return (
-      <Button
-        isLoading={!authContext.web3auth}
-        onClick={() =>
-          login(authContext.web3auth!).then((provider) =>
-            authContext.setProvider(provider!)
-          )
-        }
+      <Box
+        display="flex"
+        flex="1"
+        justifyContent={"center"}
+        alignItems={"center"}
+        flexDir={"column"}
       >
-        {authContext.web3auth ? "Login" : "Loading..."}
-      </Button>
+        <Logo height={50} />
+        <Button
+          marginTop="30px"
+          isLoading={!authContext.web3auth}
+          onClick={() =>
+            login(authContext.web3auth!).then((provider) =>
+              authContext.setProvider(provider!)
+            )
+          }
+        >
+          {authContext.web3auth ? "Login" : "Loading..."}
+        </Button>
+      </Box>
     );
   else {
     return (
@@ -81,7 +97,11 @@ const Home: NextPage = () => {
         {tokens.map((token, id) => (
           <Token token={token} key={id} />
         ))}
+        <Divider orientation="horizontal" />
         <Heading>Investments</Heading>
+        {activeInvestments.map((investment, id) => (
+          <ActiveInvestment investment={investment} key={id} />
+        ))}
       </Box>
     );
   }
