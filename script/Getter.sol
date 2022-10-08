@@ -1,4 +1,4 @@
-import "forge-std/Script.sol";
+import "lib/forge-std/src/Script.sol";
 import "./Config.sol";
 
 // /// @dev See the Solidity Scripting tutorial: https://book.getfoundry.sh/tutorials/solidity-scripting

@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import {ERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
-contract noERC20 is IUSX, ERC20 {
+//import {IERC20} from "openzeppelin-contracts/contracts/interfaces/IERC20.sol";
+
+contract noERC20 is ERC20 {
     address core;
 
     constructor(
@@ -23,11 +25,9 @@ contract noERC20 is IUSX, ERC20 {
 
     function mint(address user, uint256 amount) external onlyCore {
         _mint(user, amount);
-        emit Mint(user, amount);
     }
 
     function burn(address user, uint256 amount) external onlyCore {
         _burn(user, amount);
-        emit Burn(user, amount);
     }
 }

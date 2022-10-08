@@ -1,27 +1,29 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "forge-std/Script.sol";
-import {console2} from "forge-std/console2.sol";
-//import "./Config.sol";
+import "lib/forge-std/src/Script.sol";
+import {console2} from "lib/forge-std/src/console2.sol";
+import {CoreDeploy, SatelliteDeploy} from "./Deploy.sol";
+
+import "./Config.sol";
 
 import "./Deploy.sol";
 
 //import {Helpers} from "../../../src/helpers/Helpers.sol";
 
-contract DeploySatelliteChain is Script, CoreModuleDeploy {
+contract DeployMasterChain is Script, CoreDeploy {
     function run() public {
         uint256 chainId = vm.envUint("CHAINID");
         vm.startBroadcast();
         (
-            address core,
             address communicator,
+            address core,
             address nousdc,
             address noeth
-        ) = coreDeploy(uint16((chainId)));
+        ) = coreDeploy(uint16((chainId)), 1); // masterchain id
         vm.stopBroadcast();
 
-        string[] memory inputs = new string[](14);
+        string[] memory inputs = new string[](12);
         inputs[0] = "node";
         inputs[1] = "script/helpers/writeToJson.js";
         inputs[2] = "deployTest.json";
@@ -39,13 +41,13 @@ contract DeploySatelliteChain is Script, CoreModuleDeploy {
     }
 }
 
-contract DeployMasterChain is Script, MasterCoreDeploy {
+contract DeploySatelliteChain is Script, SatelliteDeploy {
     function run() public {
         uint256 chainId = vm.envUint("CHAINID");
         vm.startBroadcast();
         (address satellite, address communicator) = satelliteDeploy(
-            uint16(_chainId),
-            _masterChainId
+            uint16(chainId),
+            1 // masterchain id
         );
         vm.stopBroadcast();
 

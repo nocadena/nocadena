@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Satellite} from "./Satellite.sol";
+import {console2} from "lib/forge-std/src/console2.sol";
 
 interface IOutbox {
     function dispatch(
@@ -27,7 +28,22 @@ contract Communicator is IMessageRecipient {
     uint32[] hypDomainIdentifier;
     address[] dstSatellites;
 
-    function initialize(
+    function initializeCore(
+        uint16 _chainId,
+        uint16 _masterChainId,
+        address _hypOutbox,
+        uint32[] memory _hypDomainIdentifier
+    ) public {
+        console2.log(_chainId);
+        console2.log(_masterChainId);
+
+        chainId = _chainId;
+        masterChainId = _masterChainId;
+        hypOutbox = _hypOutbox;
+        hypDomainIdentifier = _hypDomainIdentifier;
+    }
+
+    function initializeSatellite(
         uint16 _chainId,
         uint16 _masterChainId,
         address _satelliteAddress,
@@ -35,6 +51,12 @@ contract Communicator is IMessageRecipient {
         uint32[] memory _hypDomainIdentifier,
         address[] memory _dstSatellites
     ) public {
+        console2.log(_chainId);
+        console2.log(_masterChainId);
+        console2.log(_satelliteAddress);
+        //console2.log(_hypOutbox);
+        //console2.log(_hypDomainIdentifier);
+
         chainId = _chainId;
         masterChainId = _masterChainId;
         satelliteAddress = _satelliteAddress;

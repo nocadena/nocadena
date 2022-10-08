@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "forge-std/Script.sol";
+import "lib/forge-std/src/Script.sol";
 import "./Config.sol";
-import "openzeppelin-contracts/contracts/proxy/transparent/ProxyAdmin.sol";
-import "openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-
 import "./Getter.sol";
+import {Communicator} from "../contracts/Communicator.sol";
+import {console2} from "lib/forge-std/src/console2.sol";
 
 contract InitCommunicator is Config, Getter {
     Communicator communicator;
@@ -17,21 +16,40 @@ contract InitCommunicator is Config, Getter {
         communicator = Communicator(
             getContractAddress(chainId, "communicator")
         );
+        console2.logAddress(getContractAddress(chainId, "communicator"));
 
         address satellite = getContractAddress(chainId, "satellite");
+        console2.logAddress(getContractAddress(chainId, "satellite"));
 
-        getSatelliteModuleAddresses();
+        if (chainId == 1) {
+            // in case we are on master chain
+            vm.startBroadcast();
+            communicator.initializeCore(
+                uint16(chainId),
+                masterChainId,
+                hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
+                hypDomainIdentifier // domains per chain
+            );
+            vm.stopBroadcast();
+        } else {
+            getSatelliteModuleAddresses();
+            vm.startBroadcast();
 
-        vm.startBroadcast();
+            communicator.initializeSatellite(
+                uint16(chainId),
+                masterChainId,
+                satellite,
+                hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
+                hypDomainIdentifier, // domains per chain
+                satelliteAddresses
+            );
+            vm.stopBroadcast();
+        }
 
-        communicator.initialize(
-            uint16(chainId),
-            masterChainId,
-            satellite,
-            hypOutbox[chainId], // outbox on the respective chain
-            hypDomainIdentifier, // domains per chain
-            satelliteAddresses
-        );
-        vm.stopBroadcast();
+        for (uint256 i = 0; i < satelliteAddresses.length; i++) {
+            console2.logAddress(satelliteAddresses[i]);
+        }
+        console2.logUint(hypDomainIdentifier.length);
+        console2.logUint(satelliteAddresses.length);
     }
 }
