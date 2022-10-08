@@ -8,5 +8,17 @@ export async function loadUserTokens() {
   //         new JsonRpcProvider(NETWORKS[MASTERCHAINID].rpcUrls[0])
   //       ) as CoreVaultEngine;
   // })
-  return ["tokens"];
+  return [
+    {
+      ...tokens[0],
+      amount: 1,
+    },
+  ];
 }
+export const tokens = [
+  {
+    name: "USDC",
+    address: "AA",
+    pic: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+  },
+];

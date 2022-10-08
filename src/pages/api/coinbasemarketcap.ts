@@ -4,11 +4,12 @@ import _ from "lodash";
 import type { NextApiRequest, NextApiResponse } from "next";
 const baseURL = "https://pro-api.coinmarketcap.com/v2";
 type names = "USDC" | "ETH";
-type Data = {
-  data: {
-    name: names;
-    priceUSD: number;
-  }[];
+export interface price {
+  name: names;
+  priceUSD: number;
+}
+export type Data = {
+  data: price[];
 };
 
 export default async function handler(

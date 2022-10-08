@@ -8,11 +8,11 @@ import { Web3AuthProvider } from "../components/Web3AuthProvider";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      {/* <Web3AuthProvider> */}
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-      {/* </Web3AuthProvider> */}
+      <Web3AuthProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Web3AuthProvider>
     </ChakraProvider>
   );
 }

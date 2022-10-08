@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Web3Auth } from "@web3auth-mpc/web3auth";
 import { SafeEventEmitterProvider } from "@web3auth-mpc/base";
 import { OpenloginAdapter } from "@web3auth-mpc/openlogin-adapter";
-import { tssDataCallback, tssGetPublic, tssSign } from "../util/mpc";
 const clientId =
   "BBP_6GOu3EJGGws9yd8wY_xFT0jZIWmiLMpqrEMx36jlM61K9XRnNLnnvEtGpF-RhXJDGMJjL-I-wTi13RcBBOo";
 export type Web3AuthContextData = {
@@ -27,6 +26,7 @@ export const Web3AuthProvider = ({
   );
   useEffect(() => {
     const init = async () => {
+      const imports = await import("torus-mpc");
       try {
         console.log("test");
         const web3auth = new Web3Auth({
@@ -54,9 +54,9 @@ export const Web3AuthProvider = ({
           },
           tssSettings: {
             useTSS: true,
-            tssGetPublic,
-            tssSign,
-            tssDataCallback,
+            tssGetPublic: imports.tssGetPublic,
+            tssSign: imports.tssSign,
+            tssDataCallback: imports.tssDataCallback,
           },
           adapterSettings: {
             _iframeUrl: "https://mpc-beta.openlogin.com",
