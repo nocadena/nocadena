@@ -28,22 +28,7 @@ contract Communicator is IMessageRecipient {
     uint32[] hypDomainIdentifier;
     address[] dstSatellites;
 
-    function initializeCore(
-        uint16 _chainId,
-        uint16 _masterChainId,
-        address _hypOutbox,
-        uint32[] memory _hypDomainIdentifier
-    ) public {
-        console2.log(_chainId);
-        console2.log(_masterChainId);
-
-        chainId = _chainId;
-        masterChainId = _masterChainId;
-        hypOutbox = _hypOutbox;
-        hypDomainIdentifier = _hypDomainIdentifier;
-    }
-
-    function initializeSatellite(
+    function initialize(
         uint16 _chainId,
         uint16 _masterChainId,
         address _satelliteAddress,
@@ -70,12 +55,14 @@ contract Communicator is IMessageRecipient {
         return bytes32(uint256(uint160(_addr)));
     }
 
-    function send(string memory protocol, uint256 amount) external {}
+    function send(string memory protocol, uint256 amount) external {
+        _sendHyperlane(amount, 2);
+    }
 
     function _sendHyperlane(uint256 amount, uint16 _dstChainId) internal {
         IOutbox(hypOutbox).dispatch(
-            hypDomainIdentifier[_dstChainId],
-            _addressToBytes32(dstSatellites[_dstChainId]), // address of the destination chain satellite
+            hypDomainIdentifier[_dstChainId - 1],
+            _addressToBytes32(dstSatellites[_dstChainId - 1]), // address of the destination chain satellite
             bytes(abi.encodePacked(amount))
         );
     }

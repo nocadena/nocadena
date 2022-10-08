@@ -2,6 +2,8 @@
 pragma solidity ^0.8.13;
 
 import "lib/forge-std/src/Test.sol";
+import {console2} from "lib/forge-std/src/console2.sol";
+
 import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {Communicator} from "../contracts/Communicator.sol";
 
@@ -20,7 +22,7 @@ contract Core {
 
     Communicator communicator;
 
-    constructor(
+    function initialize(
         address _noUSDC,
         address _noETH,
         address _communicator
@@ -32,6 +34,7 @@ contract Core {
     }
 
     function initUserAccount() public {
+        console2.logAddress(address(this));
         usersId[msg.sender] = countUser;
         countUser++;
 
@@ -41,8 +44,8 @@ contract Core {
     }
 
     function investAPWineETH(uint256 amount) public {
-        require(noUSDC.balanceOf(msg.sender) >= amount);
-        noUSDC.burn(msg.sender, amount);
+        require(noETH.balanceOf(msg.sender) >= amount, "not enough funds");
+        noETH.burn(msg.sender, amount);
         communicator.send("APwine", amount);
     }
 

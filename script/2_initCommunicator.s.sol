@@ -21,34 +21,23 @@ contract InitCommunicator is Config, Getter {
         address satellite = getContractAddress(chainId, "satellite");
         console2.logAddress(getContractAddress(chainId, "satellite"));
 
-        if (chainId == 1) {
-            // in case we are on master chain
-            vm.startBroadcast();
-            communicator.initializeCore(
-                uint16(chainId),
-                masterChainId,
-                hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
-                hypDomainIdentifier // domains per chain
-            );
-            vm.stopBroadcast();
-        } else {
-            getSatelliteModuleAddresses();
-            vm.startBroadcast();
-
-            communicator.initializeSatellite(
-                uint16(chainId),
-                masterChainId,
-                satellite,
-                hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
-                hypDomainIdentifier, // domains per chain
-                satelliteAddresses
-            );
-            vm.stopBroadcast();
-        }
-
+        getSatelliteModuleAddresses();
         for (uint256 i = 0; i < satelliteAddresses.length; i++) {
             console2.logAddress(satelliteAddresses[i]);
         }
+
+        vm.startBroadcast();
+
+        communicator.initialize(
+            uint16(chainId),
+            masterChainId,
+            satellite,
+            hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
+            hypDomainIdentifier, // domains per chain
+            satelliteAddresses
+        );
+        vm.stopBroadcast();
+
         console2.logUint(hypDomainIdentifier.length);
         console2.logUint(satelliteAddresses.length);
     }

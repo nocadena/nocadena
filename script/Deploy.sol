@@ -23,10 +23,11 @@ contract CoreDeploy {
             address
         )
     {
+        core = new Core();
         communicator = new Communicator();
         nousdc = new noERC20(address(core), "nocadena USDC", "nUSDC");
         noeth = new noERC20(address(core), "nocadena ETH", "nETH");
-        core = new Core(address(nousdc), address(noeth), address(communicator));
+        core.initialize(address(nousdc), address(noeth), address(communicator));
 
         return (
             address(communicator),

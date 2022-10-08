@@ -23,12 +23,11 @@ contract DeployMasterChain is Script, CoreDeploy {
         ) = coreDeploy(uint16((chainId)), 1); // masterchain id
         vm.stopBroadcast();
 
-        string[] memory inputs = new string[](12);
+        string[] memory inputs = new string[](14);
         inputs[0] = "node";
         inputs[1] = "script/helpers/writeToJson.js";
         inputs[2] = "deployTest.json";
         inputs[3] = vm.toString(chainId);
-
         inputs[4] = "core";
         inputs[5] = vm.toString(core);
         inputs[6] = "communicator";
@@ -37,6 +36,9 @@ contract DeployMasterChain is Script, CoreDeploy {
         inputs[9] = vm.toString(nousdc);
         inputs[10] = "noeth";
         inputs[11] = vm.toString(noeth);
+        inputs[12] = "satellite";
+        inputs[13] = vm.toString(address(0));
+
         vm.ffi(inputs);
     }
 }
@@ -51,15 +53,15 @@ contract DeploySatelliteChain is Script, SatelliteDeploy {
         );
         vm.stopBroadcast();
 
-        string[] memory inputs = new string[](16);
+        string[] memory inputs = new string[](8);
         inputs[0] = "node";
         inputs[1] = "script/helpers/writeToJson.js";
         inputs[2] = "deployTest.json";
         inputs[3] = vm.toString(chainId);
         inputs[4] = "satellite";
         inputs[5] = vm.toString(satellite);
-        inputs[4] = "communicator";
-        inputs[5] = vm.toString(communicator);
+        inputs[6] = "communicator";
+        inputs[7] = vm.toString(communicator);
         vm.ffi(inputs);
     }
 }
