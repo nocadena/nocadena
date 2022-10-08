@@ -18,7 +18,7 @@ contract Satellite {
 
     constructor() public {}
 
-    function investAPwine() {
+    function investApwine() {
         //Lido https://github.com/lidofinance/lido-dao/blob/master/contracts/0.4.24/Lido.sol
         Lido.submit(address(0));
 

@@ -3,10 +3,14 @@ pragma solidity ^0.8.13;
 
 import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
-contract noUSDC is IUSX, ERC20 {
+contract noERC20 is IUSX, ERC20 {
     address core;
 
-    constructor(address _core) ERC20("X2 Stablecoin", "USX") {
+    constructor(
+        address _core,
+        string memory _name,
+        string memory _symbol
+    ) ERC20(_name, _symbol) {
         core = _core;
         approve(core, 2**256 - 1);
     }
