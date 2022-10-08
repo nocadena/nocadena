@@ -13,7 +13,7 @@ import {InoERC20} from "./tokens/InoERC20.sol";
 contract Core {
     // pass on addresses to J
 
-    mapping(address => uint256) usersId;
+    mapping(address => uint256) public usersId;
     mapping(uint256 => mapping(address => uint256)) investedAPWine;
     uint256 countUser;
 

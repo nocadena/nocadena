@@ -8,11 +8,16 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { price } from "../pages/api/coinbasemarketcap";
 import { getTokenPrice } from "../util/coinbasemarketcap";
-import { availableTokens, tokens } from "../util/tokens";
+import { CORE_ADDRESS, tokens } from "../util/constants";
 import { investment, UserToken } from "../util/types";
+import { Web3AuthContext } from "./Web3AuthProvider";
+import RPC from "../util/ethers";
+import { ethers } from "ethers";
+import coreABI from "../../out/contracts/Core.sol/Core.json";
+import { Core } from "../../types/ethers-contracts";
 export const Investment = ({
   investment,
   balance,
@@ -22,6 +27,7 @@ export const Investment = ({
   balance: number;
   name: string;
 }) => {
+  const authContext = useContext(Web3AuthContext);
   const [price, setPrice] = useState({ name: name, priceUSD: 0 } as price);
   const [amount, setAmount] = useState(undefined as number | undefined);
   const [lockInterest, setLockInterest] = useState(false);
@@ -32,6 +38,18 @@ export const Investment = ({
       setLoading(false);
     });
   }, []);
+  async function invest() {
+    const tokenContract = new ethers.Contract(
+      CORE_ADDRESS,
+      coreABI.abi,
+      new ethers.providers.Web3Provider(authContext!.provider!).getSigner()
+    ) as Core;
+    new RPC(authContext!.provider!).getAccounts().then((address) => {
+      tokenContract.usersId(address).then((existingUserId) => {
+        //do something
+      });
+    });
+  }
   return (
     <Box margin="5px" border="1px" borderColor={"black"} padding="5px">
       <Box
@@ -130,7 +148,9 @@ export const Investment = ({
           />
         </Box>
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            invest();
+          }}
           disabled={!amount || amount > balance || amount == 0}
           w="100%"
           marginTop="10px"

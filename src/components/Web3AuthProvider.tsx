@@ -38,12 +38,13 @@ export const Web3AuthProvider = ({
           },
           chainConfig: {
             chainNamespace: "eip155",
-            chainId: "0x5",
-            rpcTarget: "https://rpc.ankr.com/eth_goerli",
-            displayName: "Goerli Testnet",
-            blockExplorer: "https://goerli.etherscan.io/",
-            ticker: "ETH",
-            tickerName: "Ethereum",
+            chainId: "0x507",
+            rpcTarget: "https://rpc.api.moonbase.moonbeam.network",
+            displayName: "Moonbeam Alpha",
+            blockExplorer:
+              "https://moonbase-blockscout.testnet.moonbeam.network/",
+            ticker: "DVR",
+            tickerName: "Moonbase Alpa",
           },
           enableLogging: true,
         });

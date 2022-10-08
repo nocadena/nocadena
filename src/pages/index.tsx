@@ -20,8 +20,13 @@ import { investmentDetails, UserToken } from "../util/types";
 import { Token } from "../components/Token";
 import { Web3AuthContext } from "../components/Web3AuthProvider";
 import { getUserInfo, login } from "../util/web3Auth";
-import { ActiveInvestment } from "../components/activeInvestment";
+import { ActiveInvestment } from "../components/ActiveInvestment";
 import Logo from "../../public/logo";
+import { ethers } from "ethers";
+import { CORE_ADDRESS } from "../util/constants";
+import coreABI from "../../out/contracts/Core.sol/Core.json";
+import { Core } from "../../types/ethers-contracts";
+import RPC from "../util/ethers";
 //https://react-icons.github.io/react-icons/icons?name=md
 const Home: NextPage = () => {
   const authContext = useContext(Web3AuthContext);
@@ -29,36 +34,26 @@ const Home: NextPage = () => {
     [] as investmentDetails[]
   );
   const [tokens, setTokens] = useState([] as UserToken[]);
-  useEffect(() => {
-    // load tokens of user
-    loadUserTokens().then((tokens) => setTokens(tokens));
-    setActiveInvestments([{ title: "Aave", pic: "hha" }]);
-  }, []);
-  if (!authContext) return <Spinner />;
-  else if (!authContext.provider)
-    return (
-      <Box
-        display="flex"
-        flex="1"
-        justifyContent={"center"}
-        alignItems={"center"}
-        flexDir={"column"}
-      >
-        <Logo height={50} />
-        <Button
-          marginTop="30px"
-          isLoading={!authContext.web3auth}
-          onClick={() =>
-            login(authContext.web3auth!).then((provider) =>
-              authContext.setProvider(provider!)
-            )
+  const LoggedInScreen = () => {
+    useEffect(() => {
+      const tokenContract = new ethers.Contract(
+        CORE_ADDRESS,
+        coreABI.abi,
+        new ethers.providers.Web3Provider(authContext!.provider!).getSigner()
+      ) as Core;
+      console.log(
+        "user address",
+        new RPC(authContext!.provider!).getAccounts()
+      );
+      console.log("chainid", new RPC(authContext!.provider!).getChainId());
+      new RPC(authContext!.provider!).getAccounts().then((address) => {
+        tokenContract.usersId(address).then((existingUserId) => {
+          if (!existingUserId) {
+            tokenContract.initUserAccount();
           }
-        >
-          {authContext.web3auth ? "Login" : "Loading..."}
-        </Button>
-      </Box>
-    );
-  else {
+        });
+      });
+    }, []);
     return (
       <Box
         flex="1"
@@ -104,6 +99,39 @@ const Home: NextPage = () => {
         ))}
       </Box>
     );
+  };
+  useEffect(() => {
+    // load tokens of user
+    if (authContext && authContext.provider)
+      loadUserTokens(authContext.provider!).then((tokens) => setTokens(tokens));
+    setActiveInvestments([{ title: "Aave", pic: "hha" }]);
+  }, [authContext]);
+  if (!authContext) return <Spinner />;
+  else if (!authContext.provider)
+    return (
+      <Box
+        display="flex"
+        flex="1"
+        justifyContent={"center"}
+        alignItems={"center"}
+        flexDir={"column"}
+      >
+        <Logo height={50} />
+        <Button
+          marginTop="30px"
+          isLoading={!authContext.web3auth}
+          onClick={() =>
+            login(authContext.web3auth!).then((provider) =>
+              authContext.setProvider(provider!)
+            )
+          }
+        >
+          {authContext.web3auth ? "Login" : "Loading..."}
+        </Button>
+      </Box>
+    );
+  else {
+    return <LoggedInScreen />;
   }
 };
 

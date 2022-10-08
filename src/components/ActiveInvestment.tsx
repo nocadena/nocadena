@@ -8,10 +8,11 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { price } from "../pages/api/coinbasemarketcap";
 import { getTokenPrice } from "../util/coinbasemarketcap";
-import { availableTokens, loadUserTokens, tokens } from "../util/tokens";
+import { tokens } from "../util/constants";
+import { loadUserInvestments, loadUserTokens } from "../util/tokens";
 import {
   InvestedToken,
   investment,
@@ -19,22 +20,24 @@ import {
   UserToken,
 } from "../util/types";
 import { Token } from "./Token";
+import { Web3AuthContext } from "./Web3AuthProvider";
 export const ActiveInvestment = ({
   investment,
 }: {
   investment: investmentDetails;
 }) => {
   const [tokens, setTokens] = useState([] as InvestedToken[]);
+  const authContext = useContext(Web3AuthContext);
   useEffect(() => {
     // replace this with real function
-    loadUserTokens().then((tokens) =>
+    loadUserInvestments(authContext!.provider!).then((tokens) =>
       setTokens(
         tokens.map((token) => {
           return { ...token, APY: 0.01, fixed: true };
         })
       )
     );
-  }, []);
+  }, [authContext]);
   return (
     <Box w="100%">
       <Box
