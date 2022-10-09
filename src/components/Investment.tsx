@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect, useContext } from "react";
 import { price } from "../pages/api/coinbasemarketcap";
-import { getTokenPrice } from "../util/coinbasemarketcap";
 import { CORE_ADDRESS, tokens } from "../util/constants";
 import { investment, UserToken } from "../util/types";
 import { Web3AuthContext } from "./Web3AuthProvider";
@@ -18,6 +17,7 @@ import RPC from "../util/ethers";
 import { ethers } from "ethers";
 import coreABI from "../../out/contracts/Core.sol/Core.json";
 import { Core } from "../../types/ethers-contracts";
+import { getTokenPrices } from "../util/coinbasemarketcap";
 export const Investment = ({
   investment,
   balance,
@@ -33,7 +33,7 @@ export const Investment = ({
   const [lockInterest, setLockInterest] = useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getTokenPrice(name).then((tmp) => {
+    getTokenPrices([name]).then((tmp: price[]) => {
       setPrice(tmp[0]);
       setLoading(false);
     });

@@ -5,10 +5,15 @@ export interface TokenType {
 }
 export interface UserToken extends TokenType {
   amount: number;
+  priceUSD: number;
 }
 export interface InvestedToken extends UserToken {
   APY: number;
   fixed: boolean;
+}
+export interface price {
+  name: string;
+  priceUSD: number;
 }
 export interface investmentDetails {
   title: string;

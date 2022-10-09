@@ -16,7 +16,7 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { MdVerticalAlignBottom, MdSend, MdTimer } from "react-icons/md";
 import { loadInvestmentGroups, loadUserTokens } from "../util/tokens";
-import { investmentDetails, UserToken } from "../util/types";
+import { investmentDetails, price, UserToken } from "../util/types";
 import { Token } from "../components/Token";
 import { Web3AuthContext } from "../components/Web3AuthProvider";
 import { getUserInfo, login } from "../util/web3Auth";
@@ -29,6 +29,8 @@ import { Core } from "../../types/ethers-contracts";
 import RPC from "../util/ethers";
 import { formatEther } from "ethers/lib/utils";
 import * as ripio from "@ripio/sdk";
+import { getTokenPrices } from "../util/coinbasemarketcap";
+import { cursorTo } from "readline";
 //https://react-icons.github.io/react-icons/icons?name=md
 const Home: NextPage = () => {
   console.log("reload");
@@ -37,6 +39,7 @@ const Home: NextPage = () => {
     [] as investmentDetails[]
   );
   const [tokens, setTokens] = useState([] as UserToken[]);
+  const [loading, setLoading] = useState(true);
   const [logginIn, setLogginIn] = useState(false);
   const LoggedInScreen = () => {
     return (
@@ -45,50 +48,85 @@ const Home: NextPage = () => {
         display="flex"
         flexDirection={"column"}
         alignItems={"center"}
+        marginTop="10"
       >
         <Box flexDirection={"row"}>
           <Heading>Assets</Heading>
         </Box>
-        <Box flexDirection={"row"}>SUM money here</Box>
-        <HStack spacing="5px" marginTop="5" marginBottom={"5"}>
-          <Box flexDirection={"column"} width="20" textAlign={"center"}>
-            <IconButton
-              variant="outline"
-              aria-label="Receive"
-              icon={<MdVerticalAlignBottom />}
-            />
-            <Text>Receive</Text>
-          </Box>
-          <Box flexDirection={"column"} width="20" textAlign={"center"}>
-            <IconButton variant="outline" aria-label="Send" icon={<MdSend />} />
-            <Text>Send</Text>
-          </Box>
-          <Box flexDirection={"column"} width="20" textAlign={"center"}>
-            <IconButton
-              variant="outline"
-              aria-label="History"
-              icon={<MdTimer />}
-            />
-            <Text>History</Text>
-          </Box>
-        </HStack>
-        <Divider orientation="horizontal" />
-        <Heading>My wallet</Heading>
-        {tokens.map((token, id) => (
-          <Token token={token} key={id} />
-        ))}
-        <Divider orientation="horizontal" />
-        <Heading>Investments</Heading>
-        {activeInvestments.map((investment, id) => (
-          <ActiveInvestment investment={investment} key={id} />
-        ))}
+        {!loading ? (
+          <>
+            <Box flexDirection={"row"}>
+              $
+              {tokens
+                .reduce((prev, cur) => {
+                  console.log("priceuSd", cur.priceUSD);
+                  return prev + cur.amount * cur.priceUSD;
+                }, 0)
+                .toFixed(2)}
+            </Box>
+            <HStack spacing="5px" marginTop="5" marginBottom={"5"}>
+              <Box flexDirection={"column"} width="20" textAlign={"center"}>
+                <IconButton
+                  variant="outline"
+                  aria-label="Receive"
+                  icon={<MdVerticalAlignBottom />}
+                />
+                <Text>Receive</Text>
+              </Box>
+              <Box flexDirection={"column"} width="20" textAlign={"center"}>
+                <IconButton
+                  variant="outline"
+                  aria-label="Send"
+                  icon={<MdSend />}
+                />
+                <Text>Send</Text>
+              </Box>
+              <Box flexDirection={"column"} width="20" textAlign={"center"}>
+                <IconButton
+                  variant="outline"
+                  aria-label="History"
+                  icon={<MdTimer />}
+                />
+                <Text>History</Text>
+              </Box>
+            </HStack>
+            <Divider orientation="horizontal" />
+            <Heading>My wallet</Heading>
+            {tokens.map((token, id) => (
+              <Token token={token} key={id} price={token.priceUSD} />
+            ))}
+            <Divider orientation="horizontal" />
+            <Heading>Investments</Heading>
+            {activeInvestments.map((investment, id) => (
+              <ActiveInvestment investment={investment} key={id} />
+            ))}
+          </>
+        ) : (
+          <Spinner />
+        )}
       </Box>
     );
   };
   useEffect(() => {
     // load tokens of user
     if (authContext && authContext.provider) {
-      loadUserTokens(authContext.provider!).then((tokens) => setTokens(tokens));
+      loadUserTokens(authContext.provider!).then((tokens) => {
+        getTokenPrices(tokens.map((token) => token.name)).then(
+          (tmp: price[]) => {
+            setTokens(
+              tokens.map((token, index) => {
+                return {
+                  ...token,
+                  priceUSD:
+                    tmp.find((tmpPrice) => tmpPrice.name == token.name)
+                      ?.priceUSD || 0,
+                };
+              })
+            );
+            setLoading(false);
+          }
+        );
+      });
       loadInvestmentGroups(authContext.provider!).then((groups) =>
         setActiveInvestments(groups)
       );

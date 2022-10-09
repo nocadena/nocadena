@@ -17,7 +17,7 @@ const Assets: NextPage = () => {
       investment.options.findIndex((option) => option.name == name) > -1
   );
   return (
-    <Box flex="1" display="flex" flexDirection={"column"}>
+    <Box flex="1" display="flex" flexDirection={"column"} marginTop="10">
       <Box
         flexDirection={"row"}
         display="flex"

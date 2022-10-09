@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect, useContext } from "react";
 import { price } from "../pages/api/coinbasemarketcap";
-import { getTokenPrice } from "../util/coinbasemarketcap";
+import { getTokenPrices } from "../util/coinbasemarketcap";
 import { tokens } from "../util/constants";
 import { loadUserInvestments, loadUserTokens } from "../util/tokens";
 import {
@@ -30,13 +30,22 @@ export const ActiveInvestment = ({
   const authContext = useContext(Web3AuthContext);
   useEffect(() => {
     // replace this with real function
-    loadUserInvestments(authContext!.provider!).then((tokens) =>
-      setTokens(
-        tokens.map((token) => {
-          return { ...token, APY: 0.01, fixed: true };
-        })
-      )
-    );
+    loadUserInvestments(authContext!.provider!).then((tokens) => {
+      getTokenPrices(tokens.map((token) => token.name)).then((tmp: price[]) => {
+        setTokens(
+          tokens.map((token, index) => {
+            return {
+              ...token,
+              priceUSD:
+                tmp.find((tmpPrice) => tmpPrice.name == token.name)?.priceUSD ||
+                0,
+              APY: 0.01,
+              fixed: true,
+            };
+          })
+        );
+      });
+    });
   }, [authContext]);
   return (
     <Box w="100%">
@@ -68,7 +77,13 @@ export const ActiveInvestment = ({
           </Box>
         </Box>
         {tokens.map((token, id) => (
-          <Token token={token} key={id} APY={token.APY} fixed={token.fixed} />
+          <Token
+            token={token}
+            key={id}
+            APY={token.APY}
+            fixed={token.fixed}
+            price={token.priceUSD}
+          />
         ))}
       </Box>
     </Box>

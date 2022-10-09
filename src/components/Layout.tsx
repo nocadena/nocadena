@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       backgroundColor="gray"
     >
       <Box
-        maxWidth={"400"}
+        maxWidth={"430"}
         backgroundColor="white"
         minHeight={400}
         flex="1"
