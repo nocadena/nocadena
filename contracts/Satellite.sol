@@ -43,11 +43,8 @@ contract Satellite {
         amountFake = 1000;
 
         investLido(amountFake);
-        //IERC20(LIDO_GOERLI).approve(CONTROLLER, amountFake);
-        //IController(CONTROLLER).deposit(
-        //    STETH_FUTURE_VAULT,
-        //    uint256(amountFake - 10)
-        //);
+        IERC20(LIDO_GOERLI).approve(CONTROLLER, 900);
+        IController(CONTROLLER).deposit(STETH_FUTURE_VAULT, uint256(1));
     }
 
     function getInvestedLido() public returns (uint256) {
