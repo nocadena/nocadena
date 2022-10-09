@@ -40,11 +40,11 @@ contract Satellite {
 
     function investApwine(uint256 amount) public {
         uint256 amountFake; // we have to do this so we can demo our product as we have not enough eth in our contract
-        amountFake = 1000;
+        amountFake = 1000000;
 
         investLido(amountFake);
-        IERC20(LIDO_GOERLI).approve(CONTROLLER, 900);
-        IController(CONTROLLER).deposit(STETH_FUTURE_VAULT, uint256(1));
+        IERC20(LIDO_GOERLI).approve(CONTROLLER, 1000000);
+        IController(CONTROLLER).deposit(STETH_FUTURE_VAULT, uint256(700000));
     }
 
     function getInvestedLido() public returns (uint256) {
