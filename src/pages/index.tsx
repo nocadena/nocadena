@@ -15,7 +15,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { MdVerticalAlignBottom, MdSend, MdTimer } from "react-icons/md";
-import { loadUserTokens } from "../util/tokens";
+import { loadInvestmentGroups, loadUserTokens } from "../util/tokens";
 import { investmentDetails, UserToken } from "../util/types";
 import { Token } from "../components/Token";
 import { Web3AuthContext } from "../components/Web3AuthProvider";
@@ -27,33 +27,18 @@ import { CORE_ADDRESS } from "../util/constants";
 import coreABI from "../../out/contracts/Core.sol/Core.json";
 import { Core } from "../../types/ethers-contracts";
 import RPC from "../util/ethers";
+import { formatEther } from "ethers/lib/utils";
+import * as ripio from "@ripio/sdk";
 //https://react-icons.github.io/react-icons/icons?name=md
 const Home: NextPage = () => {
+  console.log("reload");
   const authContext = useContext(Web3AuthContext);
   const [activeInvestments, setActiveInvestments] = useState(
     [] as investmentDetails[]
   );
   const [tokens, setTokens] = useState([] as UserToken[]);
+  const [logginIn, setLogginIn] = useState(false);
   const LoggedInScreen = () => {
-    useEffect(() => {
-      const tokenContract = new ethers.Contract(
-        CORE_ADDRESS,
-        coreABI.abi,
-        new ethers.providers.Web3Provider(authContext!.provider!).getSigner()
-      ) as Core;
-      console.log(
-        "user address",
-        new RPC(authContext!.provider!).getAccounts()
-      );
-      console.log("chainid", new RPC(authContext!.provider!).getChainId());
-      new RPC(authContext!.provider!).getAccounts().then((address) => {
-        tokenContract.usersId(address).then((existingUserId) => {
-          if (!existingUserId) {
-            tokenContract.initUserAccount();
-          }
-        });
-      });
-    }, []);
     return (
       <Box
         flex="1"
@@ -102,10 +87,40 @@ const Home: NextPage = () => {
   };
   useEffect(() => {
     // load tokens of user
-    if (authContext && authContext.provider)
+    if (authContext && authContext.provider) {
       loadUserTokens(authContext.provider!).then((tokens) => setTokens(tokens));
-    setActiveInvestments([{ title: "Aave", pic: "hha" }]);
+      loadInvestmentGroups(authContext.provider!).then((groups) =>
+        setActiveInvestments(groups)
+      );
+    }
   }, [authContext]);
+  useEffect(() => {
+    if (!logginIn && authContext && authContext.provider) {
+      setLogginIn(true);
+      const tokenContract = new ethers.Contract(
+        CORE_ADDRESS,
+        coreABI.abi,
+        new ethers.providers.Web3Provider(authContext!.provider!).getSigner()
+      ) as Core;
+      console.log(
+        "user address",
+        new RPC(authContext!.provider!).getAccounts()
+      );
+      //new ripio.JsonRPCWeb3Connector()
+      console.log("chainid", new RPC(authContext!.provider!).getChainId());
+      new RPC(authContext!.provider!).getAccounts().then((address) => {
+        tokenContract.usersId(address).then((existingUserId) => {
+          console.log("alex", parseFloat(formatEther(existingUserId)));
+          if (parseFloat(formatEther(existingUserId)) == 0) {
+            console.log("alex123", logginIn);
+            tokenContract.initUserAccount().then(() => {
+              console.log("alex4");
+            });
+          }
+        });
+      });
+    }
+  }, [authContext, authContext?.provider, logginIn]);
   if (!authContext) return <Spinner />;
   else if (!authContext.provider)
     return (

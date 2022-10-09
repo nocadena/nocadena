@@ -6,10 +6,12 @@ export const investments = [
     options: [
       {
         name: "USDC",
+        address: "0x9f65fe5855d9cfaf1a6d1d773f12f550993a6fe6",
         APY: 0.01,
       },
       {
         name: "ETH",
+        address: "0x01e52c7fd0f499da6c3454421250a1960690ea33",
         APY: 0.02,
       },
     ],
@@ -21,6 +23,7 @@ export const investments = [
     options: [
       {
         name: "ETH",
+        address: "0x01e52c7fd0f499da6c3454421250a1960690ea33",
         APY: 0.02,
       },
     ],

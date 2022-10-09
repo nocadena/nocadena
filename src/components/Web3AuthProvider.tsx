@@ -48,6 +48,7 @@ export const Web3AuthProvider = ({
           },
           enableLogging: true,
         });
+        (window as any).web3auth = web3auth;
         console.log("test2");
         const openloginAdapter = new OpenloginAdapter({
           loginSettings: {
@@ -65,6 +66,7 @@ export const Web3AuthProvider = ({
             clientId,
           },
         });
+
         console.log("test3");
         (window as any).openloginAdapter = openloginAdapter;
         console.log("test4");

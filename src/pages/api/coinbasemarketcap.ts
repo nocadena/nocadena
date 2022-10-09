@@ -31,7 +31,6 @@ export default async function handler(
     ).data.data as {
       [x in string]: [{ symbol: string; quote: object }];
     };
-    console.log("data", resp["USDC"][0]);
     const reconfiguredResp = Object.keys(resp).map((tokenId) => {
       if (tokenId == "") throw Error("Symbollist contains incorrect symbol");
       return {
