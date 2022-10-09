@@ -7,6 +7,7 @@ import {
   InputGroup,
   InputRightElement,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState, useEffect, useContext } from "react";
 import { price } from "../pages/api/coinbasemarketcap";
@@ -18,6 +19,11 @@ import { ethers } from "ethers";
 import coreABI from "../../out/contracts/Core.sol/Core.json";
 import { Core } from "../../types/ethers-contracts";
 import { getTokenPrices } from "../util/coinbasemarketcap";
+import { formatEther, parseEther } from "ethers/lib/utils";
+import { totalmem } from "os";
+import { investments } from "../util/investments";
+import InoERC20ABI from "../../out/tokens/InoERC20.sol/InoERC20.json";
+import { InoERC20 } from "../../types/ethers-contracts/tokens";
 export const Investment = ({
   investment,
   balance,
@@ -32,7 +38,9 @@ export const Investment = ({
   const [amount, setAmount] = useState(undefined as number | undefined);
   const [lockInterest, setLockInterest] = useState(false);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   useEffect(() => {
+    console.log("grbz1");
     getTokenPrices([name]).then((tmp: price[]) => {
       setPrice(tmp[0]);
       setLoading(false);
@@ -45,8 +53,48 @@ export const Investment = ({
       new ethers.providers.Web3Provider(authContext!.provider!).getSigner()
     ) as Core;
     new RPC(authContext!.provider!).getAccounts().then((address) => {
-      tokenContract.usersId(address).then((existingUserId) => {
-        //do something
+      const existingInvestment = new ethers.Contract(
+        investment.options.find((option) => option.name == name)!.address,
+        InoERC20ABI.abi,
+        new ethers.providers.Web3Provider(authContext!.provider!)
+      ) as InoERC20;
+      existingInvestment.balanceOf(address).then((balance) => {
+        console.log("bfen", parseFloat(formatEther(balance)) + amount!);
+        console.log("bfen2", price.priceUSD);
+        if (
+          (parseFloat(formatEther(balance)) + amount!) * price.priceUSD <=
+          1000
+        ) {
+          toast({
+            title: "Initiating investment",
+            description: "Please wait a few seconds",
+            status: "loading",
+            duration: 5000,
+            isClosable: true,
+          });
+          console.log("anfjdfj", parseEther(amount!.toString()));
+          tokenContract
+            .investAPWineETH(parseEther(amount!.toString()))
+            .then(() => {
+              toast({
+                title: "Investment submitted",
+                description:
+                  "Your funds will be allocated to the protocol shortly.",
+                status: "success",
+                duration: 10000,
+                isClosable: true,
+              });
+            });
+        } else {
+          toast({
+            title: "Investment amount exceeds maximum set for protocols",
+            description:
+              "To reduce smart contract risk exposure, the maximum investment amount in every protocol is $1000.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       });
     });
   }
@@ -121,7 +169,9 @@ export const Investment = ({
         </Box>
         <Box flexDirection="row" display="flex">
           <Text marginX="5px">Current variable APY:</Text>
-          <Text fontWeight="bold">0.9%</Text>
+          <Text fontWeight="bold">
+            {investment.title == "Lido" ? "5.2%" : "1.9%"}
+          </Text>
         </Box>
         <Box
           flexDirection="row"
@@ -139,7 +189,8 @@ export const Investment = ({
               boxSize="30px"
             />
           </Box>
-          Lock this interest rate at 0.8% until Dec 2022
+          Lock this interest rate at{" "}
+          {investment.title == "Lido" ? "5%" : "1.7%"} until Jan 2023
           <Checkbox
             checked={lockInterest}
             onChange={(event) => {

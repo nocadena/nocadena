@@ -20,7 +20,6 @@ contract InitCommunicator is Config, Getter {
 
         address satellite = getContractAddress(chainId, "satellite");
         console2.logAddress(getContractAddress(chainId, "satellite"));
-
         getCommunicatorModuleAddresses();
 
         console2.logUint(123456789);

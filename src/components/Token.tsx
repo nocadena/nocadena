@@ -43,7 +43,7 @@ export const Token = ({
             <Text>
               {token.amount} {token.name}
             </Text>
-            <Text>$ {price.toFixed(2)}</Text>
+            <Text>$ {(price * token.amount).toFixed(2)}</Text>
           </Box>
         </Box>
         <Box flexDir={"row"} display="flex">

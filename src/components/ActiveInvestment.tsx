@@ -31,6 +31,7 @@ export const ActiveInvestment = ({
   useEffect(() => {
     // replace this with real function
     loadUserInvestments(authContext!.provider!).then((tokens) => {
+      console.log("grbz2");
       getTokenPrices(tokens.map((token) => token.name)).then((tmp: price[]) => {
         setTokens(
           tokens.map((token, index) => {
@@ -39,7 +40,7 @@ export const ActiveInvestment = ({
               priceUSD:
                 tmp.find((tmpPrice) => tmpPrice.name == token.name)?.priceUSD ||
                 0,
-              APY: 0.01,
+              APY: 0.05,
               fixed: true,
             };
           })

@@ -8,6 +8,7 @@ import {
   IconButton,
   Spinner,
   Text,
+  Toast,
 } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from "react";
 import type { NextPage } from "next";
@@ -31,6 +32,7 @@ import { formatEther } from "ethers/lib/utils";
 import * as ripio from "@ripio/sdk";
 import { getTokenPrices } from "../util/coinbasemarketcap";
 import { cursorTo } from "readline";
+import { toast } from "react-toastify";
 //https://react-icons.github.io/react-icons/icons?name=md
 const Home: NextPage = () => {
   console.log("reload");
@@ -40,7 +42,7 @@ const Home: NextPage = () => {
   );
   const [tokens, setTokens] = useState([] as UserToken[]);
   const [loading, setLoading] = useState(true);
-  const [logginIn, setLogginIn] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false);
   const LoggedInScreen = () => {
     return (
       <Box
@@ -111,6 +113,7 @@ const Home: NextPage = () => {
     // load tokens of user
     if (authContext && authContext.provider) {
       loadUserTokens(authContext.provider!).then((tokens) => {
+        console.log("grbz3");
         getTokenPrices(tokens.map((token) => token.name)).then(
           (tmp: price[]) => {
             setTokens(
@@ -133,8 +136,8 @@ const Home: NextPage = () => {
     }
   }, [authContext]);
   useEffect(() => {
-    if (!logginIn && authContext && authContext.provider) {
-      setLogginIn(true);
+    if (!loggingIn && authContext && authContext.provider) {
+      setLoggingIn(true);
       const tokenContract = new ethers.Contract(
         CORE_ADDRESS,
         coreABI.abi,
@@ -150,7 +153,7 @@ const Home: NextPage = () => {
         tokenContract.usersId(address).then((existingUserId) => {
           console.log("alex", parseFloat(formatEther(existingUserId)));
           if (parseFloat(formatEther(existingUserId)) == 0) {
-            console.log("alex123", logginIn);
+            console.log("alex123", loggingIn);
             tokenContract.initUserAccount().then(() => {
               console.log("alex4");
             });
@@ -158,7 +161,7 @@ const Home: NextPage = () => {
         });
       });
     }
-  }, [authContext, authContext?.provider, logginIn]);
+  }, [authContext, authContext?.provider, loggingIn]);
   if (!authContext) return <Spinner />;
   else if (!authContext.provider)
     return (

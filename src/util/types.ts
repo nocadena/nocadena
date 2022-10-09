@@ -24,5 +24,6 @@ export interface investment extends investmentDetails {
   options: {
     name: string;
     APY: number;
+    address: string;
   }[];
 }
