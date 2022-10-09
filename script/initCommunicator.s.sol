@@ -11,7 +11,7 @@ contract InitCommunicator is Config, Getter {
     Communicator communicator;
 
     function run() public {
-        //init();
+        init();
         uint256 chainId = vm.envUint("CHAINID");
         communicator = Communicator(
             getContractAddress(chainId, "communicator")
@@ -21,11 +21,10 @@ contract InitCommunicator is Config, Getter {
         address satellite = getContractAddress(chainId, "satellite");
         console2.logAddress(getContractAddress(chainId, "satellite"));
 
-        getSatelliteModuleAddresses();
-        for (uint256 i = 0; i < satelliteAddresses.length; i++) {
-            console2.logAddress(satelliteAddresses[i]);
-        }
+        getCommunicatorModuleAddresses();
 
+        console2.logUint(123456789);
+        console2.logUint(communicatorAddresses.length);
         vm.startBroadcast();
 
         communicator.initialize(
@@ -34,11 +33,11 @@ contract InitCommunicator is Config, Getter {
             satellite,
             hypOutbox[uint16(chainId) - 1], // outbox on the respective chain
             hypDomainIdentifier, // domains per chain
-            satelliteAddresses
+            communicatorAddresses
         );
         vm.stopBroadcast();
 
         console2.logUint(hypDomainIdentifier.length);
-        console2.logUint(satelliteAddresses.length);
+        console2.logUint(communicatorAddresses.length);
     }
 }

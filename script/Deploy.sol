@@ -13,10 +13,12 @@ contract CoreDeploy {
     Satellite satellite;
     noERC20 nousdc;
     noERC20 noeth;
+    noERC20 apeth;
 
     function coreDeploy(uint16 _chainId, uint16 _masterChainId)
         internal
         returns (
+            address,
             address,
             address,
             address,
@@ -27,13 +29,21 @@ contract CoreDeploy {
         communicator = new Communicator();
         nousdc = new noERC20(address(core), "nocadena USDC", "nUSDC");
         noeth = new noERC20(address(core), "nocadena ETH", "nETH");
-        core.initialize(address(nousdc), address(noeth), address(communicator));
+        apeth = new noERC20(address(core), "apwine ETH", "apETH");
+
+        core.initialize(
+            address(nousdc),
+            address(noeth),
+            address(apeth),
+            address(communicator)
+        );
 
         return (
             address(communicator),
             address(core),
             address(nousdc),
-            address(noeth)
+            address(noeth),
+            address(apeth)
         );
     }
 }

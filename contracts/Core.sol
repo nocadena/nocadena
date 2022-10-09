@@ -14,24 +14,33 @@ contract Core {
     // pass on addresses to J
 
     mapping(address => uint256) public usersId;
-    mapping(uint256 => mapping(address => uint256)) investedAPWine;
-    uint256 countUser;
+    mapping(uint256 => mapping(address => uint256)) public investedAPWine;
+    uint256 public countUser;
 
     InoERC20 noUSDC;
     InoERC20 noETH;
+    InoERC20 apETH;
 
     Communicator communicator;
 
     function initialize(
         address _noUSDC,
         address _noETH,
+        address _apETH,
+        //address _anoETH,
         address _communicator
     ) public {
         noUSDC = InoERC20(_noUSDC);
         noETH = InoERC20(_noETH);
+        apETH = InoERC20(_apETH);
+
+        //aaveNoUSDC = InoERC20(_noUSDC);
+        //aaveNoETH = InoERC20(_noETH);
 
         communicator = Communicator(_communicator);
     }
+
+    // TODO reset function
 
     function initUserAccount() public {
         console2.logAddress(address(this));
@@ -39,13 +48,14 @@ contract Core {
         countUser++;
 
         // issue fake tokens to every user account for demonstration purposes
-        noUSDC.mint(msg.sender, 100);
+        noUSDC.mint(msg.sender, 100 ether);
         noETH.mint(msg.sender, 1 ether);
     }
 
     function investAPWineETH(uint256 amount) public {
         require(noETH.balanceOf(msg.sender) >= amount, "not enough funds");
         noETH.burn(msg.sender, amount);
+        apETH.mint(msg.sender, amount);
         communicator.send("APwine", amount);
     }
 

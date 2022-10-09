@@ -19,7 +19,7 @@ contract noERC20 is ERC20 {
 
     //modifiers
     modifier onlyCore() {
-        require(address(core) == msg.sender, "onlyCore revert");
+        require(address(core) == msg.sender, "Only core");
         _;
     }
 
