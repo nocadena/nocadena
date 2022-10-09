@@ -23,7 +23,7 @@ interface IMessageRecipient {
 contract Communicator is IMessageRecipient {
     uint16 chainId;
     uint16 masterChainId;
-    address satelliteAddress;
+    address payable satelliteAddress;
     address hypOutbox;
     uint32[] hypDomainIdentifier;
     address[] public dstCommunicators;
@@ -44,7 +44,7 @@ contract Communicator is IMessageRecipient {
 
         chainId = _chainId;
         masterChainId = _masterChainId;
-        satelliteAddress = _satelliteAddress;
+        satelliteAddress = payable(_satelliteAddress);
         hypOutbox = _hypOutbox;
         hypDomainIdentifier = _hypDomainIdentifier;
         dstCommunicators = _dstCommunicators;
@@ -60,6 +60,7 @@ contract Communicator is IMessageRecipient {
     }
 
     function send(string memory protocol, uint256 amount) external {
+        // default invest in APwine
         _sendHyperlane(amount, 2);
     }
 

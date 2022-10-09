@@ -15,11 +15,19 @@ contract Config {
         hypDomainIdentifier.push(0x6d6f2d61);
         hypOutbox[0] = 0x54148470292C24345fb828B003461a9444414517;
 
-        // Mumbai
+        // Goerli
         chainIds.push(2);
-        hypDomainIdentifier.push(80001);
-        hypOutbox[1] = 0xe17c37212d785760E8331D4A4395B17b34Ba8cDF;
+        hypDomainIdentifier.push(5);
+        hypOutbox[1] = 0xDDcFEcF17586D08A5740B7D91735fcCE3dfe3eeD;
 
-        //TODO add optimism
+        // Mumbai
+        chainIds.push(3);
+        hypDomainIdentifier.push(80001);
+        hypOutbox[2] = 0xe17c37212d785760E8331D4A4395B17b34Ba8cDF;
+
+        // Optimism
+        chainIds.push(4);
+        hypDomainIdentifier.push(0);
+        hypOutbox[3] = address(0);
     }
 }
