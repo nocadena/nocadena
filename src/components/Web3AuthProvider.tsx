@@ -3,7 +3,7 @@ import { Web3Auth } from "@web3auth-mpc/web3auth";
 import { SafeEventEmitterProvider } from "@web3auth-mpc/base";
 import { OpenloginAdapter } from "@web3auth-mpc/openlogin-adapter";
 const clientId =
-  "BBP_6GOu3EJGGws9yd8wY_xFT0jZIWmiLMpqrEMx36jlM61K9XRnNLnnvEtGpF-RhXJDGMJjL-I-wTi13RcBBOo";
+  "BBLzio-vcma_d-Ra8hYxCWOxM0Q9OPiV02ZJh7KM1EX9ulsn3Z6wgDLsdyFtza2hE5GUD_WuS512hCFNoGxsMIY";
 export type Web3AuthContextData = {
   web3auth: Web3Auth | null;
   provider: SafeEventEmitterProvider | null;

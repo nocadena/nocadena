@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   //this breaks process.env -> check how to do it
   // webpack: (
   //   config,

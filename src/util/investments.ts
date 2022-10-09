@@ -23,7 +23,7 @@ export const investments = [
     options: [
       {
         name: "ETH",
-        address: "0x4e5f64b66b00801c10b45c050f89f90d469a3361",
+        address: "0x7d0605769c6b5e265a11e0b73a78252c943c49eb",
         APY: 0.055,
       },
     ],

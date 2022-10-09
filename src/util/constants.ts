@@ -1,12 +1,12 @@
 export const tokens = [
   {
     name: "USDC",
-    address: "0x5510c16ec8065e8a655ad3b97e521900357b9d80",
+    address: "0x9842d38b0ee493da43ff27b8a087c96541250df1",
     pic: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
   },
   {
     name: "ETH",
-    address: "0xae14ed4a0f05c4ec76db5cbd5f524553815cf392",
+    address: "0x410eef8c381a76e4e035bf104b565912dd3a63d3",
     pic: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
   },
 ];
@@ -18,8 +18,8 @@ export const investmentTokens = [
   // },
   {
     name: "ETH",
-    address: "0x4e5f64b66b00801c10b45c050f89f90d469a3361",
+    address: "0x7d0605769c6b5e265a11e0b73a78252c943c49eb",
     pic: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
   },
 ];
-export const CORE_ADDRESS = "0xca46d01a41e41395d9d2298f42ff3beaa6508195";
+export const CORE_ADDRESS = "0xed6fa131956ae97dbb4948e1f9ddeb1fd7ed0a88";
