@@ -49,7 +49,7 @@ contract Core {
 
         // issue fake tokens to every user account for demonstration purposes
         noUSDC.mint(msg.sender, 100 ether);
-        noETH.mint(msg.sender, 1 ether);
+        noETH.mint(msg.sender, 2 ether);
     }
 
     function investAPWineETH(uint256 amount) public {

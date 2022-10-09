@@ -79,12 +79,14 @@ contract Communicator is IMessageRecipient {
     function handle(
         uint32 _origin,
         bytes32 _sender,
-        bytes memory _messageBody
+        bytes calldata _messageBody
     ) external {
+        //bytes memory _x = _messageBody;
         uint256 amount;
-        assembly {
-            amount := mload(add(_messageBody, 20))
-        }
+        amount = abi.decode(_messageBody, (uint256));
+        //assembly {
+        //    amount := mload(add(_x, 20))
+        //}
         Satellite(satelliteAddress).investApwine(amount);
     }
 }
